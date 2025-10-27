@@ -1,0 +1,42 @@
+<h2>Vehicle List</h2>
+
+<!-- Search Bar -->
+<div class="search-container">
+  <input 
+    type="text" 
+    [(ngModel)]="searchQuery" 
+    placeholder="Search by car model..." 
+    (keyup.enter)="onSearch()"
+  />
+  <button (click)="onSearch()">Search</button>
+</div>
+
+<!-- Shows only when isLoading = true -->
+<div *ngIf="isLoading">Loading vehicles...</div>
+
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<ul *ngIf="!isLoading && !error && vehicles.length > 0">
+  <li *ngFor="let vehicle of vehicles">
+    <strong>{{ vehicle.car_make }} {{ vehicle.car_model }}</strong> ({{ vehicle.age_of_vehicle }} years old)
+    <br>
+    Owner: {{ vehicle.first_name }} {{ vehicle.last_name }} ({{ vehicle.email }})
+    <br>
+    VIN: {{ vehicle.vin }}
+    <br>
+    Manufactured: {{ vehicle.manufactured_date }}
+    <br>
+    Car Model: {{ vehicle.car_model}}
+  </li>
+</ul>
+
+<p *ngIf="!isLoading && !error && vehicles.length === 0">
+  No vehicles found.
+</p>
+
+<!-- Pagination Controls -->
+<div class="pagination" *ngIf="!isLoading && !error">
+  <button (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+  <span>Page {{ currentPage }}</span>
+  <button (click)="nextPage()" [disabled]="vehicles.length < pageSize">Next</button>
+</div>

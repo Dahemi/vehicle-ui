@@ -1,0 +1,50 @@
+.search-container {
+  margin-bottom: 20px;
+}
+
+.search-container input {
+  padding: 8px;
+  width: 300px;
+  margin-right: 10px;
+}
+
+.search-container button {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pagination button {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  color: red;
+  padding: 10px;
+  background-color: #ffe6e6;
+  border-radius: 4px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}

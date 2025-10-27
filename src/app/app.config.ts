@@ -1,10 +1,22 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { ApplicationConfig, inject } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideApollo } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
+import { InMemoryCache } from '@apollo/client';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideZoneChangeDetection({ eventCoalescing: true }), provideClientHydration(withEventReplay()),
+  providers: [ 
+    provideHttpClient(), 
+    provideApollo(() => {
+      const httpLink = inject(HttpLink);
+
+      return {
+        link: httpLink.create({
+          uri: 'http://localhost:3000/graphql',
+        }),
+        cache: new InMemoryCache(),
+      };
+    }),
     
   ]
 };
