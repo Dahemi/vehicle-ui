@@ -1,3 +1,28 @@
-<app-vehicle-list></app-vehicle-list>
-<hr>
-<app-vehicle-upload></app-vehicle-upload>
+<div class="app-container">
+  <header class="app-header">
+    <h1>Vehicle Management System</h1>
+  </header>
+
+  <main class="app-main">
+    <!-- Import Section -->
+    <section class="section import-section">
+      <app-vehicle-upload></app-vehicle-upload>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- Export Section -->
+    <section class="section export-section">
+      <app-vehicle-export></app-vehicle-export>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- Vehicle List Section -->
+    <section class="section list-section">
+      <app-vehicle-list></app-vehicle-list>
+    </section>
+  </main>
+
+  
+</div>

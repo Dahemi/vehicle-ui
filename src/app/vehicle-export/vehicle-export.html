@@ -1,0 +1,39 @@
+<div class="export-container">
+  <h2>Export Vehicles</h2>
+  
+  <div class="export-form">
+    <label for="years-input">Export vehicles older than:</label>
+    <div class="input-group">
+      <input 
+        id="years-input"
+        type="number" 
+        [(ngModel)]="selectedYears" 
+        min="1"
+        [disabled]="exporting"
+        placeholder="Enter years"
+      />
+      <span class="years-label">years</span>
+    </div>
+    
+    <button 
+      (click)="onExport()" 
+      [disabled]="exporting || selectedYears < 1"
+      class="export-button"
+    >
+      {{ exporting ? 'Exporting...' : 'Export to CSV' }}
+    </button>
+  </div>
+
+  <div *ngIf="exporting" class="spinner">
+    <div class="loader"></div>
+  </div>
+
+  <div 
+    *ngIf="exportMessage" 
+    [class.success]="jobStatus === 'completed'" 
+    [class.error]="jobStatus === 'failed'"
+    class="message"
+  >
+    {{ exportMessage }}
+  </div>
+</div>

@@ -31,13 +31,15 @@
     "@angular/platform-server": "^20.3.0",
     "@angular/router": "^20.3.0",
     "@angular/ssr": "^20.3.7",
+    "@apollo/client": "^4.0.1",
     "apollo-angular": "^12.1.0",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "express": "^5.1.0",
+    "graphql": "^16",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.15.0",
-    "@apollo/client": "^4.0.1",
-    "graphql": "^16"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular/build": "^20.3.7",
