@@ -61,7 +61,4 @@ export class VehicleUploadService {
     return this.http.post<ExportResponse>(`${this.apiUrl}/export`, {years});
   }
 
-  getExportJobStatus(jobId: string): Observable<ExportJobStatusResponse> {
-    return this.http.get<ExportJobStatusResponse>(`${this.apiUrl}/export-status/${jobId}`);
-  }
 }

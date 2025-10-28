@@ -27,13 +27,4 @@
   <div *ngIf="exporting" class="spinner">
     <div class="loader"></div>
   </div>
-
-  <div 
-    *ngIf="exportMessage" 
-    [class.success]="jobStatus === 'completed'" 
-    [class.error]="jobStatus === 'failed'"
-    class="message"
-  >
-    {{ exportMessage }}
-  </div>
 </div>
