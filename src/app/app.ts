@@ -4,15 +4,18 @@ import { VehicleUploadComponent } from './vehicle-upload/vehicle-upload';
 import { VehicleExport } from "./vehicle-export/vehicle-export";
 import { NotificationService } from './services/notification.service';
 import { ToastNotification } from './toast-notification/toast-notification';
+import { NzTabsModule } from 'ng-zorro-antd/tabs'; 
 
 @Component({
   selector: 'app-root',
-  imports: [VehicleList, VehicleUploadComponent, VehicleExport, ToastNotification],
+  imports: [VehicleList, VehicleUploadComponent, VehicleExport, ToastNotification,NzTabsModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App implements OnDestroy {
   protected readonly title = signal('vehicle-ui');
+  selectedTabIndex = 0; 
+
 
   constructor(private notificationService: NotificationService) {}
 

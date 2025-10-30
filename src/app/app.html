@@ -4,28 +4,25 @@
   </header>
 
   <main class="app-main">
-    <!-- Import Section -->
-    <section class="section import-section">
-      <app-vehicle-upload></app-vehicle-upload>
-    </section>
-
-    <hr class="section-divider">
-
-    <!-- Export Section -->
-    <section class="section export-section">
-      <app-vehicle-export></app-vehicle-export>
-    </section>
-
-    <hr class="section-divider">
-
-    <!-- Vehicle List Section -->
+    <!-- Vehicle List full-width -->
     <section class="section list-section">
       <app-vehicle-list></app-vehicle-list>
     </section>
+
+    <!-- Import and Export in a row -->
+    <div class="top-sections">
+      <section class="section import-section">
+        <app-vehicle-upload></app-vehicle-upload>
+      </section>
+
+      <section class="section export-section">
+        <app-vehicle-export></app-vehicle-export>
+      </section>
+    </div>
+
+    <hr class="section-divider">
   </main>
 
   <!-- Toast Notification -->
-    <app-toast-notification></app-toast-notification>
-
-  
+  <app-toast-notification></app-toast-notification>
 </div>

@@ -13,7 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
         return {
           cache: new InMemoryCache(),
           link: httpLink.create({
-            uri: 'http://localhost:3000/graphql',
+            uri: 'http://localhost:4000/graphql',
           }),
         };
       },

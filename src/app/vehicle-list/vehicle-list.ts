@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { FormsModule} from '@angular/forms';
+import {NzTableModule} from 'ng-zorro-antd/table';
+import { NzInputModule} from 'ng-zorro-antd/input';
 
 export interface Vehicle {
   id: string;
@@ -35,7 +37,7 @@ const GET_VEHICLES = gql`
 
 @Component({
   selector: 'app-vehicle-list',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NzTableModule, NzInputModule],
   templateUrl: './vehicle-list.html',
   styleUrls: ['./vehicle-list.css'],
 })
@@ -55,17 +57,22 @@ export class VehicleList implements OnInit {
 
   constructor(private apollo: Apollo) {}
 
-  // fetch data inside OnInit function
+  
   ngOnInit(): void {
+    this.fetchVehicles();
+  }
+
+  fetchVehicles(): void {
+    this.isLoading = true;
     this.apollo
       .watchQuery<{ findAllVehicles: Vehicle[] }>({
         query: GET_VEHICLES,
-        variables:{
+        variables: {
           page: this.currentPage,
           limit: this.pageSize,
           sortBy: 'manufactured_date',
           search: this.searchQuery || null,
-        }
+        },
       })
       .valueChanges.subscribe({
         next: ({ data, loading }) => {
@@ -85,18 +92,18 @@ export class VehicleList implements OnInit {
 
   onSearch(): void{
     this.currentPage = 1; // reset to first page on new search
-    this.ngOnInit(); // re-fetch data with new search query
+    this.fetchVehicles(); // re-fetch data with new search query
   }
 
   nextPage(): void{
     this.currentPage++;
-    this.ngOnInit(); // re-fetch data for next page
+    this.fetchVehicles(); // re-fetch data for next page
   }
 
   previousPage(): void{
     if(this.currentPage > 1){
       this.currentPage--;
-      this.ngOnInit(); // re-fetch data for previous page
+      this.fetchVehicles(); // re-fetch data for previous page
     }
   }
 }
