@@ -3,25 +3,44 @@
     <h1>Vehicle Management System</h1>
   </header>
 
-  <main class="app-main">
-    <!-- Vehicle List full-width -->
-    <section class="section list-section">
-      <app-vehicle-list></app-vehicle-list>
-    </section>
+  <div class="card-container">
+    <nz-tabs
+      nzType="card"
+      [nzHideAdd]="true"
+      [nzTabBarGutter]="0"
+      [(nzSelectedIndex)]="selectedTabIndex"
+      class="custom-tabs"
+    >
+      <!-- ===== Tab 1 ===== -->
+      <nz-tab nzTitle="Vehicle Data">
+        <section class="section list-section">
+          <app-vehicle-list></app-vehicle-list>
+        </section>
 
-    <!-- Import and Export in a row -->
-    <div class="top-sections">
-      <section class="section import-section">
-        <app-vehicle-upload></app-vehicle-upload>
-      </section>
+        <div class="top-sections">
+          <section class="section import-section">
+            <app-vehicle-upload></app-vehicle-upload>
+          </section>
+          <section class="section export-section">
+            <app-vehicle-export></app-vehicle-export>
+          </section>
+        </div>
 
-      <section class="section export-section">
-        <app-vehicle-export></app-vehicle-export>
-      </section>
-    </div>
+        <hr class="section-divider" />
+      </nz-tab>
 
-    <hr class="section-divider">
-  </main>
+      <!-- ===== Tab 2 ===== -->
+      <nz-tab nzTitle="Repair Records">
+        <div class="section">
+          <!-- Existing search by VIN component -->
+          <app-repair-record-list></app-repair-record-list>
+          
+          <!-- NEW: Dropdown VIN lookup component -->
+          <app-vin-repair-lookup></app-vin-repair-lookup>
+        </div>
+      </nz-tab>
+    </nz-tabs>
+  </div>
 
   <!-- Toast Notification -->
   <app-toast-notification></app-toast-notification>

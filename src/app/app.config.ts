@@ -6,7 +6,6 @@ import { InMemoryCache } from '@apollo/client';
 import { provideAnimations } from '@angular/platform-browser/animations'; 
 
 
-
 export const appConfig: ApplicationConfig = {
   providers: [ 
     provideHttpClient(), 
@@ -16,7 +15,7 @@ export const appConfig: ApplicationConfig = {
 
       return {
         link: httpLink.create({
-          uri: 'http://localhost:3000/graphql',
+          uri: 'http://localhost:4000/graphql',
         }),
         cache: new InMemoryCache(),
       };

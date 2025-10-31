@@ -1,0 +1,81 @@
+<div class="vin-lookup-container">
+  <h2>View Repair Records by VIN</h2>
+
+  <!-- VIN Dropdown -->
+  <div class="dropdown-container">
+    <label for="vin-select">Select VIN from Repair Records:</label>
+    <nz-select
+      id="vin-select"
+      [(ngModel)]="selectedVin"
+      (ngModelChange)="onVinChange($event)"
+      nzPlaceHolder="Choose a VIN to view repair records"
+      [nzLoading]="isLoadingVins"
+      nzShowSearch
+      nzAllowClear
+      style="width: 100%; max-width: 600px"
+    >
+      <nz-option
+        *ngFor="let vin of vins"
+        [nzValue]="vin"
+        [nzLabel]="vin"
+      ></nz-option>
+    </nz-select>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoadingRecords" class="loading">
+    <div class="spinner"></div>
+    <p>Loading repair records...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-message">
+    
+    {{ error }}
+  </div>
+
+  <!-- Repair Records Table -->
+  <div *ngIf="!isLoadingRecords && !error && selectedVin && repairRecords.length > 0" class="table-container">
+    <h3>Repair Records for VIN: {{ selectedVin }}</h3>
+    <nz-table
+      #repairTable
+      [nzData]="repairRecords"
+      [nzPageSize]="10"
+      [nzShowPagination]="repairRecords.length > 10"
+      nzSize="middle"
+    >
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Cost</th>
+          <th>Status</th>
+          <th>Mechanic</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let record of repairTable.data">
+          <td>{{ record.created_at | date:'medium' }}</td>
+          <td>{{ record.repair_description }}</td>
+          <td class="cost">${{ record.repair_cost | number:'1.2-2' }}</td>
+          <td>
+            <span [class]="'status-badge status-' + record.status.toLowerCase()">
+              {{ record.status }}
+            </span>
+          </td>
+          <td>{{ record.mechanic_name || 'N/A' }}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+
+  <!-- No Records Message -->
+  <p *ngIf="!isLoadingRecords && !error && selectedVin && repairRecords.length === 0" class="no-records">
+    No repair records found for VIN: <strong>{{ selectedVin }}</strong>
+  </p>
+
+  <!-- Initial State Message -->
+  <p *ngIf="!selectedVin && !isLoadingVins" class="select-prompt">
+     Please select a VIN from the dropdown above to view its repair records.
+  </p>
+</div>
