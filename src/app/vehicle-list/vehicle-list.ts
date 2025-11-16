@@ -114,6 +114,7 @@ export class VehicleList implements OnInit {
           sortBy: 'manufactured_date',
           search: this.searchQuery || null,
         },
+        fetchPolicy: 'network-only',
       })
       .valueChanges.subscribe({
         next: ({ data, loading }) => {
