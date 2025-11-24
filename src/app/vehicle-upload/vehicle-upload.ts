@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VehicleUploadService } from '../services/vehicle-upload.service';
-import { interval, switchMap, takeWhile } from 'rxjs';
+import { NotificationService } from '../services/notification.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-vehicle-upload',
@@ -10,14 +11,47 @@ import { interval, switchMap, takeWhile } from 'rxjs';
   templateUrl: './vehicle-upload.html',
   styleUrls: ['./vehicle-upload.css']
 })
-
-export class VehicleUploadComponent {
+export class VehicleUploadComponent implements OnInit, OnDestroy {
   selectedFile: File | null = null;
   uploading = false;
   uploadMessage = '';
-  jobStatus: string | null = null;
+  currentJobId: string | null = null;
+  
+  private subscriptions = new Subscription();
+  jobStatus: any;
 
-  constructor(private uploadService: VehicleUploadService) {}
+  constructor(
+    private uploadService: VehicleUploadService,
+    private notificationService: NotificationService
+  ) {}
+
+  ngOnInit(): void {
+    this.subscriptions.add(
+      this.notificationService.onImportCompleted().subscribe(data => {
+        if (data.jobId === this.currentJobId) {
+          this.uploading = false;
+          this.uploadMessage = `✓ Import completed! ${data.recordCount} vehicles imported.`;
+          this.selectedFile = null;
+          this.currentJobId = null;
+        }
+      })
+    );
+
+    
+    this.subscriptions.add(
+      this.notificationService.onImportFailed().subscribe(data => {
+        if (data.jobId === this.currentJobId) {
+          this.uploading = false;
+          this.uploadMessage = `✗ Import failed: ${data.error}`;
+          this.currentJobId = null;
+        }
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -37,8 +71,8 @@ export class VehicleUploadComponent {
 
     this.uploadService.uploadFile(this.selectedFile).subscribe({
       next: (response) => {
-        this.uploadMessage = `${response.message} - Job ID: ${response.jobId}`;
-        this.pollJobStatus(response.jobId);
+        this.currentJobId = response.jobId; 
+        this.uploadMessage = `File uploaded. Processing...`;
       },
       error: (err) => {
         this.uploading = false;
@@ -46,34 +80,5 @@ export class VehicleUploadComponent {
         console.error('Upload error:', err);
       }
     });
-  }
-
-  private pollJobStatus(jobId: string): void {
-    interval(2000) // Poll every 2 seconds
-      .pipe(
-        switchMap(() => this.uploadService.getJobStatus(jobId)),
-        takeWhile((status) => status.status !== 'completed' && status.status !== 'failed', true)
-      )
-      .subscribe({
-        next: (status) => {
-          this.jobStatus = status.status;
-          
-          if (status.status === 'completed') {
-            this.uploading = false;
-            this.uploadMessage = '✓ Import completed successfully!';
-            this.selectedFile = null;
-          } else if (status.status === 'failed') {
-            this.uploading = false;
-            this.uploadMessage = '✗ Import failed';
-          } else {
-            this.uploadMessage = `Processing... (${status.status})`;
-          }
-        },
-        error: (err) => {
-          this.uploading = false;
-          this.uploadMessage = 'Error checking job status';
-          console.error('Status check error:', err);
-        }
-      });
   }
 }

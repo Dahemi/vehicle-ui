@@ -18,22 +18,7 @@ export interface RepairRecord {
   updated_at: string;
 }
 
-const GET_REPAIR_RECORDS_BY_VIN = gql`
-  query GetRepairRecordsByVIN($vin: String!) {
-    findRepairRecordByVIN(vin: $vin) {
-      id
-      vin
-      repair_description
-      repair_cost
-      status
-      mechanic_name
-      created_at
-      updated_at
-    }
-  }
-`;
-
-const GET_VEHICLE_BY_VIN = gql`
+const GET_VEHICLE_WITH_REPAIRS = gql`
   query GetVehicleByVIN($vin: String!) {
     findVehicleByVIN(vin: $vin) {
       vin
@@ -44,9 +29,19 @@ const GET_VEHICLE_BY_VIN = gql`
       car_model
       manufactured_date
       age_of_vehicle
+      repairRecords {
+        id
+        vin
+        repair_description
+        repair_cost
+        status
+        mechanic_name
+        created_at
+        updated_at
+      }
     }
   }
-`
+`;
 
 @Component({
   selector: 'app-repair-record-list',
@@ -61,6 +56,7 @@ const GET_VEHICLE_BY_VIN = gql`
   templateUrl: './repair-records.html',
   styleUrls: ['./repair-records.css'],
 })
+
 export class RepairRecordList {
   records: RepairRecord[] = [];
   vehicle: Vehicle | null = null;
@@ -81,45 +77,37 @@ export class RepairRecordList {
     this.isLoading = true;
     this.error = null;
     this.vehicle = null;
+    this.records = [];
 
-    // Fetch Vehicle Details
+
     this.apollo
-      .query<{ findVehicleByVIN: Vehicle | null }>({
-        query: GET_VEHICLE_BY_VIN,
+      .query<{ findVehicleByVIN: Vehicle & { repairRecords: RepairRecord[] } | null }>({
+        query: GET_VEHICLE_WITH_REPAIRS,
         variables: { vin: this.searchVIN.trim() },
+        fetchPolicy: 'network-only',
       })
       .subscribe({
         next: ({ data }) => {
+          this.isLoading = false;
+          
           if (data?.findVehicleByVIN) {
-            this.vehicle = data.findVehicleByVIN;
-          }
-        },
-        error: (err) => {
-          console.error('Error fetching vehicle:', err);
-        },
-      });
-
-    // Fetch Repair Records
-    this.apollo
-      .watchQuery<{ findRepairRecordByVIN: RepairRecord[] }>({
-        query: GET_REPAIR_RECORDS_BY_VIN,
-        variables: {
-          vin: this.searchVIN.trim(),
-        },
-      })
-      .valueChanges.subscribe({
-        next: ({ data, loading }) => {
-          this.isLoading = loading;
-          if (data?.findRepairRecordByVIN) {
-            this.records = data.findRepairRecordByVIN as RepairRecord[];
+            // Extract vehicle data
+            const { repairRecords, ...vehicleData } = data.findVehicleByVIN;
+            this.vehicle = vehicleData as Vehicle;
+            
+            // Extract repair records
+            this.records = repairRecords || [];
+            
             if (this.records.length === 0) {
               this.error = `No repair records found for VIN: ${this.searchVIN}`;
             }
+          } else {
+            this.error = `No vehicle found with VIN: ${this.searchVIN}`;
           }
         },
         error: (err) => {
           this.isLoading = false;
-          this.error = 'Failed to load repair records. Please try again.';
+          this.error = 'Failed to load data. Please try again.';
           console.error('GraphQL error:', err);
         },
       });

@@ -14,6 +14,17 @@ export interface ExportFailedNotification{
     error: string;
 }
 
+export interface ImportNotification {
+    jobId: string;
+    recordCount: number;
+    filename: string;
+}
+
+export interface ImportFailedNotification {
+    jobId: string;
+    error: string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -21,6 +32,8 @@ export class NotificationService{
     private socket: Socket;
     private exportCompleted$ = new Subject<ExportNotification>();
     private exportFailed$ = new Subject<ExportFailedNotification>();
+    private importCompleted$ = new Subject<ImportNotification>();
+    private importFailed$ = new Subject<ImportFailedNotification>();
 
     constructor(){
         
@@ -49,6 +62,14 @@ export class NotificationService{
         this.socket.on('export-failed',(data: ExportFailedNotification) =>{
             this.exportFailed$.next(data);
         });
+
+        this.socket.on('import-completed', (data: ImportNotification) => {
+            this.importCompleted$.next(data);
+        });
+
+        this.socket.on('import-failed', (data: ImportFailedNotification) => {
+            this.importFailed$.next(data);
+        });
     }
 
     // public methods other components can use to subscribe 
@@ -58,6 +79,14 @@ export class NotificationService{
 
     onExportFailed(): Observable<ExportFailedNotification>{
         return this.exportFailed$.asObservable();
+    }
+
+    onImportCompleted(): Observable<ImportNotification>{
+        return this.importCompleted$.asObservable();
+    }
+
+    onImportFailed(): Observable<ImportFailedNotification>{
+        return this.importFailed$.asObservable();
     }
 
     disconnect(): void{

@@ -36,7 +36,7 @@ export class ToastNotification implements OnInit, OnDestroy {
   constructor(private notificationService: NotificationService) {}
 
   ngOnInit(): void {
-    // Subscribe to export completion events
+    // Export notifications
     this.subscriptions.add(
       this.notificationService.onExportCompleted().subscribe(data => {
         const message = data.recordCount > 0
@@ -47,10 +47,25 @@ export class ToastNotification implements OnInit, OnDestroy {
       })
     );
 
-    // Subscribe to export failure events
     this.subscriptions.add(
       this.notificationService.onExportFailed().subscribe(data => {
         this.showToast(`Export failed: ${data.error}`, 'error');
+      })
+    );
+
+    // Import Notifications
+    this.subscriptions.add(
+      this.notificationService.onImportCompleted().subscribe(data => {
+        this.showToast(
+          `Import completed! ${data.recordCount} vehicles imported from ${data.filename}`,
+          'success'
+        );
+      })
+    );
+
+    this.subscriptions.add(
+      this.notificationService.onImportFailed().subscribe(data => {
+        this.showToast(`Import failed: ${data.error}`, 'error');
       })
     );
   }
@@ -68,7 +83,6 @@ export class ToastNotification implements OnInit, OnDestroy {
 
     this.toasts.push(toast);
 
-    // Auto-dismiss after 10 seconds
     setTimeout(() => {
       this.removeToast(toast.id);
     }, 10000);
@@ -82,7 +96,8 @@ export class ToastNotification implements OnInit, OnDestroy {
     switch (type) {
       case 'success': return '✓';
       case 'error': return '✗';
-      default: return 'ℹ';
+      case 'info': return 'i'; 
+      default: return 'i';
     }
   }
 }

@@ -9,14 +9,6 @@ export interface UploadResponse {
   status: string;
 }
 
-// response structure when checking job progress
-export interface JobStatusResponse {
-  jobId: string;
-  status: 'waiting' | 'active' | 'completed' | 'failed';
-  progress: number;
-  result?: any;
-}
-
 export interface ExportResponse{
   message: string;
   jobId: string;
@@ -51,10 +43,6 @@ export class VehicleUploadService {
     const formData = new FormData();
     formData.append('file', file);
     return this.http.post<UploadResponse>(`${this.apiUrl}/upload`, formData);
-  }
-
-  getJobStatus(jobId: string): Observable<JobStatusResponse> {
-    return this.http.post<JobStatusResponse>(`${this.apiUrl}/job-status/${jobId}`, {});
   }
 
   exportVehicles(years: number): Observable<ExportResponse>{
